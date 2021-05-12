@@ -30,9 +30,8 @@
 */
 
 /**
-  This code is licensed under the "GNU GPL version 2 or later". See
-  license.txt or https://www.gnu.org/licenses/gpl-2.0.html
-
+  This code is licensed under the "GNU Lesser General Public License (LGPL)"
+  with all information in LICENSE.
   Copyright 2011-2021: Thomas Wick 
 */
 
