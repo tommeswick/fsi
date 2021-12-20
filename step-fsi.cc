@@ -1111,7 +1111,7 @@ private:
   Triangulation<dim>   triangulation;
   FESystem<dim>        fe;
   DoFHandler<dim>      dof_handler;
-  ConstraintMatrix    constraints;  
+  AffineConstraints<double>    constraints;  
   BlockSparsityPattern      sparsity_pattern; 
   BlockSparseMatrix<double> system_matrix;   
   BlockVector<double> solution, newton_update, old_timestep_solution;
@@ -1328,7 +1328,7 @@ void FSI_ALE_Problem<dim>::setup_system ()
   constraints.close ();
   
   std::vector<unsigned int> dofs_per_block (3);
-  DoFTools::count_dofs_per_block (dof_handler, dofs_per_block, block_component);  
+  dofs_per_block = DoFTools::count_dofs_per_fe_block (dof_handler, block_component);  
   const unsigned int n_v = dofs_per_block[0],
     n_u = dofs_per_block[1],
     n_p =  dofs_per_block[2];
