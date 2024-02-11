@@ -4,7 +4,7 @@
  Institut für Angewandte Mathematik (IfAM)
  AG Wissenschaftliches Rechnen (GWR)
 
- Date: May 12, 2021
+ Date: Feb 11, 2024
  E-mail: thomas.wick@ifam.uni-hannover.de
 
 
@@ -16,8 +16,7 @@
  while using a nonlinear harmonic MMPDE
  in contrast to a (linear) biharmonic model.
 
- This code is based on the deal.II.9.2.0 version
-
+ This code is based on the deal.II.9.5.1.
 
  deal.II step: fluid-structure interaction
  Keywords: fluid-structure interaction, nonlinear harmonic MMPDE, 
@@ -922,10 +921,10 @@ namespace Parameters
 // a time dependent inflow profile with smooth 
 // increase, to avoid irregularities in the initial data.			
 template <int dim>
-class BoundaryParabel : public Function<dim> 
+class BoundaryParabola : public Function<dim> 
 {
   public:
-  BoundaryParabel (const double time,const double inflow_velocity)    
+  BoundaryParabola (const double time,const double inflow_velocity)    
     : Function<dim>(dim+dim+1) 
     {
       _time = time; 
@@ -947,7 +946,7 @@ private:
 // with number 0 (namely the x-velocity)
 template <int dim>
 double
-BoundaryParabel<dim>::value (const Point<dim>  &p,
+BoundaryParabola<dim>::value (const Point<dim>  &p,
 			     const unsigned int component) const
 {
   Assert (component < this->n_components,
@@ -995,11 +994,11 @@ BoundaryParabel<dim>::value (const Point<dim>  &p,
 
 template <int dim>
 void
-BoundaryParabel<dim>::vector_value (const Point<dim> &p,
+BoundaryParabola<dim>::vector_value (const Point<dim> &p,
 				    Vector<double>   &values) const 
 {
   for (unsigned int c=0; c<this->n_components; ++c)
-    values (c) = BoundaryParabel<dim>::value (p, c);
+    values (c) = BoundaryParabola<dim>::value (p, c);
 }
 
 
@@ -2413,7 +2412,7 @@ double inflow_velocity =parameters.inflow_velocity;
  
     VectorTools::interpolate_boundary_values (dof_handler,
 					      0,
-					      BoundaryParabel<dim>(time,inflow_velocity),
+					      BoundaryParabola<dim>(time,inflow_velocity),
 					      boundary_values,
 					      component_mask);    
 
@@ -2421,14 +2420,14 @@ double inflow_velocity =parameters.inflow_velocity;
     component_mask[dim] = false; // ux
     VectorTools::interpolate_boundary_values (dof_handler,
                                               2,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
                                               boundary_values,
                                               component_mask);
 
 
     VectorTools::interpolate_boundary_values (dof_handler,
                                               3,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
                                               boundary_values,
                                               component_mask);
 
@@ -2436,13 +2435,13 @@ double inflow_velocity =parameters.inflow_velocity;
     component_mask[dim] = true;  // ux 
     VectorTools::interpolate_boundary_values (dof_handler,
 					      80,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
 					      boundary_values,
 					      component_mask);
     
     VectorTools::interpolate_boundary_values (dof_handler,
 					      81,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
 					      boundary_values,
 					      component_mask);
     
@@ -2451,7 +2450,7 @@ double inflow_velocity =parameters.inflow_velocity;
     
     VectorTools::interpolate_boundary_values (dof_handler,
 					      1,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
 					      boundary_values,
 					      component_mask);
     
@@ -2478,30 +2477,30 @@ FSI_ALE_Problem<dim>::set_newton_bc ()
    
     VectorTools::interpolate_boundary_values (dof_handler,
 					      0,
-					      ZeroFunction<dim>(dim+dim+1),                                             
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),                                             
 					      constraints,
 					      component_mask); 
     component_mask[dim] = false; // ux
     VectorTools::interpolate_boundary_values (dof_handler,
                                               2,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
                                               constraints,
                                               component_mask);
     
     VectorTools::interpolate_boundary_values (dof_handler,
                                               3,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
                                               constraints,
                                               component_mask);
     component_mask[dim] = true; // ux
     VectorTools::interpolate_boundary_values (dof_handler,
                                               80,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
                                               constraints,
                                               component_mask);
     VectorTools::interpolate_boundary_values (dof_handler,
 					      81,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
 					      constraints,
 					      component_mask);       
     component_mask[0] = false;
@@ -2509,7 +2508,7 @@ FSI_ALE_Problem<dim>::set_newton_bc ()
     
     VectorTools::interpolate_boundary_values (dof_handler,
 					      1,
-					      ZeroFunction<dim>(dim+dim+1),  
+					      dealii::Functions::ZeroFunction<dim>(dim+dim+1),  
 					      constraints,
 					      component_mask);
 }  
@@ -3004,25 +3003,25 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain()
 
    VectorTools::interpolate_boundary_values (dof_handler,
        0,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
    VectorTools::interpolate_boundary_values (dof_handler,
        1,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
    VectorTools::interpolate_boundary_values (dof_handler,
        2,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
    VectorTools::interpolate_boundary_values (dof_handler,
        81,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
@@ -3178,26 +3177,26 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain_structure()
 
    VectorTools::interpolate_boundary_values (dof_handler,
 					     80,
-					     ZeroFunction<dim>(dim+dim+1),
+					     dealii::Functions::ZeroFunction<dim>(dim+dim+1),
 					     boundary_values,
 					     component_mask);
 
 
    VectorTools::interpolate_boundary_values (dof_handler,
        0,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
    VectorTools::interpolate_boundary_values (dof_handler,
        1,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
    VectorTools::interpolate_boundary_values (dof_handler,
        2,
-       ZeroFunction<dim>(dim+dim+1),
+       dealii::Functions::ZeroFunction<dim>(dim+dim+1),
        boundary_values,
        component_mask);
 
@@ -3473,7 +3472,3 @@ int main ()
 
   return 0;
 }
-
-
-
-
