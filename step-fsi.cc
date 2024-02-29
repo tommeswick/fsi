@@ -1326,7 +1326,7 @@ void FSI_ALE_Problem<dim>::setup_system ()
   }
   constraints.close ();
   
-  std::vector<unsigned int> dofs_per_block (3);
+  std::vector<types::global_dof_index> dofs_per_block (3);
   dofs_per_block = DoFTools::count_dofs_per_fe_block (dof_handler, block_component);  
   const unsigned int n_v = dofs_per_block[0],
     n_u = dofs_per_block[1],
@@ -1456,7 +1456,7 @@ void FSI_ALE_Problem<dim>::assemble_system_matrix ()
 
   FullMatrix<double>   local_matrix (dofs_per_cell, dofs_per_cell);
 
-  std::vector<unsigned int> local_dof_indices (dofs_per_cell); 
+  std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell); 
 		
 
   // Now, we are going to use the 
@@ -1906,7 +1906,7 @@ FSI_ALE_Problem<dim>::assemble_system_rhs ()
  
   Vector<double>       local_rhs (dofs_per_cell);
 
-  std::vector<unsigned int> local_dof_indices (dofs_per_cell);
+  std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
   
   const FEValuesExtractors::Vector velocities (0);
   const FEValuesExtractors::Vector displacements (dim); 
@@ -2405,7 +2405,7 @@ FSI_ALE_Problem<dim>::set_initial_bc (const double time)
 
 double inflow_velocity =parameters.inflow_velocity;
 
-    std::map<unsigned int,double> boundary_values;  
+    std::map<types::global_dof_index, double> boundary_values;  
     std::vector<bool> component_mask (dim+dim+1, true);
     // (Scalar) pressure
     component_mask[dim+dim] = false;  
@@ -2454,7 +2454,7 @@ double inflow_velocity =parameters.inflow_velocity;
 					      boundary_values,
 					      component_mask);
     
-    for (typename std::map<unsigned int, double>::const_iterator
+    for (typename std::map<types::global_dof_index, double>::const_iterator
 	   i = boundary_values.begin();
 	 i != boundary_values.end();
 	 ++i)
@@ -2723,7 +2723,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor()
   const unsigned int dofs_per_cell = fe.dofs_per_cell;
   const unsigned int n_face_q_points = face_quadrature_formula.size();
 
-  std::vector<unsigned int> local_dof_indices (dofs_per_cell);
+  std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
   std::vector<Vector<double> >  face_solution_values (n_face_q_points, 
 						      Vector<double> (dim+dim+1));
 
@@ -2880,7 +2880,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain()
 
 
    Vector<double> local_rhs (dofs_per_cell);
-   std::vector<unsigned int> local_dof_indices (dofs_per_cell);
+   std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
 
    std::vector<Vector<double> > old_solution_values (n_q_points, Vector<double> (dim+dim+1));
 
@@ -2993,7 +2993,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain()
     component_mask[dim+1] = true;
     component_mask[dim+dim] = true;  //pressure
 
-   std::map<unsigned int,double> boundary_values;
+   std::map<types::global_dof_index, double> boundary_values;
    VectorTools::interpolate_boundary_values (dof_handler,
 					     80,
 					     ComponentSelectFunction<dim>(drag_lift_select, drag_lift_constant,dim+dim+1),
@@ -3027,7 +3027,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain()
 
    value = 0.;
 
-   for(std::map<unsigned int,double>::const_iterator 
+   for(std::map<types::global_dof_index, double>::const_iterator 
 p=boundary_values.begin(); p!=boundary_values.end(); p++)
    {
      value += p->second * system_rhs(p->first);
@@ -3066,7 +3066,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain_structure()
 
 
    Vector<double> local_rhs (dofs_per_cell);
-   std::vector<unsigned int> local_dof_indices (dofs_per_cell);
+   std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
 
    std::vector<Vector<double> > old_solution_values (n_q_points, Vector<double> (dim+dim+1));
 
@@ -3167,7 +3167,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain_structure()
     component_mask[dim+1] = true;
     component_mask[dim+dim] = true;  //pressure
 
-   std::map<unsigned int,double> boundary_values;
+   std::map<types::global_dof_index, double> boundary_values;
 
    VectorTools::interpolate_boundary_values (dof_handler,
 					     81,
@@ -3203,7 +3203,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain_structure()
 
    value = 0.;
 
-   for(std::map<unsigned int,double>::const_iterator 
+   for(std::map<types::global_dof_index, double>::const_iterator 
 p=boundary_values.begin(); p!=boundary_values.end(); p++)
    {
      value += p->second * system_rhs(p->first);
