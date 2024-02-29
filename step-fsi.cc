@@ -932,10 +932,10 @@ class BoundaryParabola : public Function<dim>
     }
     
   virtual double value (const Point<dim>   &p,
-			const unsigned int  component = 0) const;
+			const unsigned int  component = 0) const override;
 
   virtual void vector_value (const Point<dim> &p, 
-			     Vector<double>   &value) const;
+			     Vector<double>   &value) const override;
 
 private:
   double _time;
@@ -995,7 +995,7 @@ BoundaryParabola<dim>::value (const Point<dim>  &p,
 template <int dim>
 void
 BoundaryParabola<dim>::vector_value (const Point<dim> &p,
-				    Vector<double>   &values) const 
+				    Vector<double>   &values) const
 {
   for (unsigned int c=0; c<this->n_components; ++c)
     values (c) = BoundaryParabola<dim>::value (p, c);
