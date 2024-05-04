@@ -1298,7 +1298,7 @@ template <int dim>
 template <int dim>
 void FSI_ALE_Problem<dim>::setup_system ()
 {
-  timer.enter_subsection("Setup system.");
+  TimerOutput::Scope t(timer, "setup");
 
   system_matrix.clear ();
   
@@ -1400,8 +1400,6 @@ void FSI_ALE_Problem<dim>::setup_system ()
   system_rhs.block(2).reinit (n_p);
 
   system_rhs.collect_sizes ();
-
-  timer.leave_subsection(); 
 }
 
 
@@ -1432,7 +1430,7 @@ void FSI_ALE_Problem<dim>::setup_system ()
 template <int dim>
 void FSI_ALE_Problem<dim>::assemble_system_matrix ()
 {
-  timer.enter_subsection("Assemble Matrix.");
+  TimerOutput::Scope t(timer, "Assemble Matrix.");
   system_matrix=0;
      
   QGauss<dim>   quadrature_formula(parameters.degree+2);  
@@ -1868,8 +1866,6 @@ void FSI_ALE_Problem<dim>::assemble_system_matrix ()
 	} 
       // end cell
     }   
-  
-  timer.leave_subsection();
 }
 
 
@@ -1882,7 +1878,7 @@ template <int dim>
 void
 FSI_ALE_Problem<dim>::assemble_system_rhs ()
 {
-  timer.enter_subsection("Assemble Rhs.");
+  TimerOutput::Scope t(timer, "Assemble Rhs.");
   system_rhs=0;
   
   QGauss<dim>   quadrature_formula(parameters.degree+2);
@@ -2381,8 +2377,6 @@ FSI_ALE_Problem<dim>::assemble_system_rhs ()
 	}   
       
     }  // end cell
-      
-  timer.leave_subsection();
 }
 
 
@@ -2520,7 +2514,7 @@ template <int dim>
 void 
 FSI_ALE_Problem<dim>::solve () 
 {
-  timer.enter_subsection("Solve linear system.");
+  TimerOutput::Scope t(timer, "Solve linear system.");
   Vector<double> sol, rhs;    
   sol = newton_update;    
   rhs = system_rhs;
@@ -2531,7 +2525,6 @@ FSI_ALE_Problem<dim>::solve ()
   newton_update = sol;
   
   constraints.distribute (newton_update);
-  timer.leave_subsection();
 }
 
 // This is the Newton iteration with simple linesearch backtracking 
