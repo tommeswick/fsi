@@ -1507,11 +1507,8 @@ void FSI_ALE_Problem<dim>::assemble_system_matrix ()
   const Tensor<2,dim> Identity = ALE_Transformations
     ::get_Identity<dim> ();
  				     				   
-  typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
   
-  for (; cell!=endc; ++cell)
+  for (const auto &cell : dof_handler.active_cell_iterators())
     { 
       fe_values.reinit (cell);
       local_matrix = 0;
@@ -1933,12 +1930,8 @@ FSI_ALE_Problem<dim>::assemble_system_rhs ()
   std::vector<std::vector<Tensor<1,dim> > > 
     old_timestep_solution_face_grads (n_face_q_points, std::vector<Tensor<1,dim> > (dim+dim+1));
    
-  
-  typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
 
-  for (; cell!=endc; ++cell)
+  for (const auto &cell : dof_handler.active_cell_iterators()) 
     { 
       fe_values.reinit (cell);	 
       local_rhs = 0;   	
@@ -2725,11 +2718,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor()
   
   Tensor<1,dim> drag_lift_value;
   
-  typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-   for (; cell!=endc; ++cell)
+  for (const auto &cell : dof_handler.active_cell_iterators())
      {
 
        // First, we are going to compute the forces that
@@ -2880,11 +2869,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain()
    std::vector<std::vector<Tensor<1,dim> > > 
      old_solution_grads (n_q_points, std::vector<Tensor<1,dim> > (dim+dim+1));
 
-     typename DoFHandler<dim>::active_cell_iterator
-     cell = dof_handler.begin_active(),
-     endc = dof_handler.end();
-
-   for (; cell!=endc; ++cell)
+   for (const auto &cell : dof_handler.active_cell_iterators())
    {
      local_rhs = 0;
 
@@ -3066,11 +3051,7 @@ void FSI_ALE_Problem<dim>::compute_drag_lift_fsi_fluid_tensor_domain_structure()
    std::vector<std::vector<Tensor<1,dim> > > 
      old_solution_grads (n_q_points, std::vector<Tensor<1,dim> > (dim+dim+1));
 
-     typename DoFHandler<dim>::active_cell_iterator
-     cell = dof_handler.begin_active(),
-     endc = dof_handler.end();
-
-   for (; cell!=endc; ++cell)
+   for (const auto &cell : dof_handler.active_cell_iterators())
    {
      local_rhs = 0;
 
@@ -3232,13 +3213,7 @@ void FSI_ALE_Problem<dim>::compute_minimal_J()
   double min_J= 1.0e+5;
   double J=1.0e+5;
 
-
-  typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-  
-  
-  for (; cell!=endc; ++cell)
+  for (const auto &cell : dof_handler.active_cell_iterators())
     { 
       fe_values.reinit (cell);
             
@@ -3304,11 +3279,7 @@ void FSI_ALE_Problem<dim>::compute_functional_values()
 template<int dim>
 void FSI_ALE_Problem<dim>::refine_mesh()
 {
-  typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-  
-  for (; cell!=endc; ++cell)
+  for (const auto &cell : dof_handler.active_cell_iterators())
     {
       // Refine the solid
       if (cell->material_id() == 1)
