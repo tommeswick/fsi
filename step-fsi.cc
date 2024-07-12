@@ -846,7 +846,7 @@ namespace Parameters
       prm.enter_subsection("Timestepping schemes & timestep & max_no_timesteps");
       {
         prm.declare_entry("time_stepping_scheme", "BE",
-                        Patterns::Selection("BE|CN|CN_Shifted"),
+                        Patterns::Selection("BE|CN|CN_shifted"),
                         "stepping scheme");
 
         prm.declare_entry("timestep", "1.0",
