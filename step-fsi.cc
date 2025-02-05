@@ -3,10 +3,10 @@
  Leibniz Universität Hannover (LUH)
  Institut für Angewandte Mathematik (IfAM)
  AG Wissenschaftliches Rechnen (GWR)
-
- Date: Feb 11, 2024
  E-mail: thomas.wick@ifam.uni-hannover.de
 
+ Date: Feb 05, 2025
+ This code is based on the version deal.II.9.6.0.
 
  This code is a modification of 
  the ANS article open-source version:
@@ -16,7 +16,6 @@
  while using a nonlinear harmonic MMPDE
  in contrast to a (linear) biharmonic model.
 
- This code is based on the deal.II.9.5.1.
 
  deal.II step: fluid-structure interaction
  Keywords: fluid-structure interaction, nonlinear harmonic MMPDE, 
