@@ -1,5 +1,5 @@
 # fsi
-Fluid-Structure-Interaction in deal.II
+Fluid-Structure-Interaction in deal.II (9.6.0)
 -
 
 This github version is based on 
