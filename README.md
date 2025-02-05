@@ -14,6 +14,8 @@ The underlying open-source software library is
 
 https://www.dealii.org
 
+The latest tested version of this code is based on deal.II version 9.6.0 (Feb 2025)
+
 Credit and citation
 -
 
