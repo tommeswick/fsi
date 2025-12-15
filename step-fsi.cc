@@ -1578,6 +1578,10 @@ void FSI_ALE_Problem<dim>::assemble_system_matrix ()
 	      const Tensor<2,dim> sigma_ALE = NSE_in_ALE
 		::get_stress_fluid_ALE<dim> (density_fluid, viscosity, pI,
 					     grad_v, grad_v_T, F_Inverse, F_Inverse_T );
+
+		const Tensor<2,dim> sigma_ALE_except_pressure = NSE_in_ALE
+		::get_stress_fluid_except_pressure_ALE<dim> (density_fluid, viscosity,
+					     grad_v, grad_v_T, F_Inverse, F_Inverse_T );
 	      
 	      // Further, we also need some information from the previous time steps
 	      const Tensor<1,dim> old_timestep_v = ALE_Transformations
@@ -1616,7 +1620,7 @@ void FSI_ALE_Problem<dim>::assemble_system_matrix ()
 						      
 		  const Tensor<2,dim> stress_fluid_ALE_2nd_term_LinAll = NSE_in_ALE
 		    ::get_stress_fluid_ALE_2nd_term_LinAll_short 
-		    (J_F_Inverse_T_LinU, sigma_ALE, grad_v, grad_v_LinV,								      
+		    (J_F_Inverse_T_LinU, sigma_ALE_except_pressure, grad_v, grad_v_LinV,								      
 		     F_Inverse, F_Inverse_LinU,	J, viscosity, density_fluid);  
 
 		  const Tensor<1,dim> convection_fluid_LinAll_short = NSE_in_ALE		    
