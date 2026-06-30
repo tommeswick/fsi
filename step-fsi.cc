@@ -1074,8 +1074,8 @@ private:
   void assemble_system_rhs ();
 
   // Boundary conditions (bc)
-  void set_initial_bc (const double time);
-  void set_newton_bc ();
+  void set_bc_in_initial_newton_guess (const double time);
+  void set_bc_in_subsequent_newton_iter ();
 
   // Linear solver
   void solve ();
@@ -1319,7 +1319,7 @@ void FSI_ALE_Problem<dim>::setup_system ()
 
   {				 
     constraints.clear ();
-    set_newton_bc ();
+    set_bc_in_subsequent_newton_iter ();
     DoFTools::make_hanging_node_constraints (dof_handler,
 					     constraints);
   }
@@ -2390,7 +2390,7 @@ FSI_ALE_Problem<dim>::assemble_system_rhs ()
 // one major advantage of the `variational-monolithic' formulation.
 template <int dim>
 void
-FSI_ALE_Problem<dim>::set_initial_bc (const double time)
+FSI_ALE_Problem<dim>::set_bc_in_initial_newton_guess (const double time)
 { 
 
 double inflow_velocity =parameters.inflow_velocity;
@@ -2459,7 +2459,7 @@ double inflow_velocity =parameters.inflow_velocity;
 // conditions, now. 
 template <int dim>
 void
-FSI_ALE_Problem<dim>::set_newton_bc ()
+FSI_ALE_Problem<dim>::set_bc_in_subsequent_newton_iter ()
 {
     std::vector<bool> component_mask (dim+dim+1, true);
     component_mask[dim+dim] = false;  // p
@@ -2546,13 +2546,14 @@ void FSI_ALE_Problem<dim>::newton_iteration (const double time)
   const double line_search_damping = 0.6;
   double new_newton_residual;
   
-  // Application of the initial boundary conditions to the 
+  // Application of the initial Newton guess boundary conditions to the 
   // variational equations:
-  set_initial_bc (time);
+  set_bc_in_initial_newton_guess (time);
   assemble_system_rhs();
 
   double newton_residual = system_rhs.linfty_norm(); 
   double old_newton_residual= newton_residual;
+  double initial_newton_residual = newton_residual;
   unsigned int newton_step = 1;
    
   if (newton_residual < lower_bound_newton_residual)
@@ -2563,7 +2564,8 @@ void FSI_ALE_Problem<dim>::newton_iteration (const double time)
 		<< std::endl;     
     }
   
-  while (newton_residual > lower_bound_newton_residual &&
+  while ((newton_residual > lower_bound_newton_residual &&
+	  (newton_residual/initial_newton_residual) > lower_bound_newton_residual) &&
 	 newton_step < max_no_newton_steps)
     {
       timer_newton.start();
